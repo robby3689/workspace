@@ -36,7 +36,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: us-east-1
           SOURCE_DIR: .
-          DEST_DIR: workspace-sachin
+          DEST_DIR: Workspace-sachin
 
             - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21

@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,4 +21,32 @@ jobs:
         run: docker build -t sachinsingh/workspace -f Dockerfile.dev .
 
       - name: Run tests in Docker container
-        run: docker run -e CI=true sachinsingh/workspace npm run test
+        run: docker run -e CI=true sachinsingh/workspace npm run test -- --coverage
+
+      - name: Zip source bundle
+        run: zip -r deploy.zip . -x '*.git*' 'node_modules/*' 'build/*' 'coverage/*'
+
+      - name: Upload to S3
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl private --follow-symlinks
+        env:
+          AWS_S3_BUCKET: elasticbeanstalk-us-east-1-180294210078
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+          SOURCE_DIR: .
+          DEST_DIR: workspace-sachin
+
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: webspace-sachin
+          environment_name: webspace-sachin-env
+          region: us-east-1
+          version_label: ${{ github.sha }}
+          deployment_package: deploy.zip
+          bucket_name: elasticbeanstalk-us-east-1-180294210078
+          bucket_key: workspace-sachin/deploy-${{ github.sha }}.zip

@@ -7,15 +7,16 @@ before_install:
 
 script:
   - docker run -e CI=true sachinsingh/webspace npm test -- --coverage
+
 deploy:
   provider: elasticbeanstalk
+  edge: true  
   region: "us-east-1"
-  app: "webspace-sachin"
-  env: "webspace-sachin-env"
+  app: "Workspace-sachin" 
+  env: "Workspace-sachin-env"
   bucket_name: "elasticbeanstalk-us-east-1-180294210078"
-  bucket_path: "workspace-sachin"
-  on: 
+  bucket_path: "Workspace-sachin"
+  on:
     branch: master
-  access_key_id: $"AWS_ACCESS_KEY_ID"
-  secret_access_key: $"AWS_SECRET_ACCESS_KEY"
-    
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY

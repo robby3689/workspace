@@ -38,13 +38,13 @@ jobs:
           SOURCE_DIR: .
           DEST_DIR: workspace-sachin
 
-      - name: Deploy to Elastic Beanstalk
+            - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: webspace-sachin
-          environment_name: webspace-sachin-env
+          application_name: Workspace-sachin
+          environment_name: Workspace-sachin-env
           region: us-east-1
           version_label: ${{ github.sha }}
           deployment_package: deploy.zip
